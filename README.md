@@ -1,2 +1,2 @@
 # kiwi_mobile
-Python mobile application using Kiwi
+Python mobile application (calculator) using Kiwi
