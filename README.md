@@ -22,3 +22,8 @@ project_root/
 Install poetry and run: 
 
 poetry install 
+
+
+------
+poetry run pytest
+

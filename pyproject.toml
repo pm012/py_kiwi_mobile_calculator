@@ -3,7 +3,7 @@ name = "py-kiwi-mobile-calculator"
 version = "0.1.0"
 description = "Mobile calculator with python + kiwi"
 authors = [
-    {name = "Serhii Kroshka",email = "pm012@ukr.net"}
+    {name = "Serhii Kroshka", email = "pm012@ukr.net"}
 ]
 license = "MIT"
 readme = "README.md"
@@ -21,7 +21,21 @@ dependencies = [
     "urllib3 (==2.3.0)"
 ]
 
+[tool.poetry]
+packages = [
+    { include = "src" }
+]
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pytest-cov (>=7.1.0,<8.0.0)"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-v --cov=src --cov-report=term-missing"

@@ -5,17 +5,19 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.core.window import Window
 from src.engine import CalculatorEngine
 
-Window.size = (300, 500)
+Window.size = (400, 600)
 
 
 class CalculatorUI(BoxLayout):
     def __init__(self, engine: CalculatorEngine = None, **kwargs):
-        super().__init__(orientation='vertical', **kwargs)
+        super().__init__(orientation='vertical', spacing=5, padding=10, **kwargs)
         self.engine = engine or CalculatorEngine()
+        self.is_scientific = False
 
+        # Дисплей
         self.result = TextInput(
-            font_size=45,
-            size_hint_y=0.2,
+            font_size=40,
+            size_hint_y=0.18,
             readonly=True,
             halign="right",
             multiline=False,
@@ -25,7 +27,46 @@ class CalculatorUI(BoxLayout):
         )
         self.add_widget(self.result)
 
-        buttons = [
+        # Перемикач режимів
+        self.mode_btn = Button(
+            text="Switch to Scientific Mode",
+            size_hint_y=0.08,
+            background_color=[0.2, 0.6, 0.8, 1],
+            on_press=self.toggle_mode
+        )
+        self.add_widget(self.mode_btn)
+
+        # Контейнер під клавіатуру
+        self.keypad_container = BoxLayout(orientation='vertical', size_hint_y=0.74)
+        self.add_widget(self.keypad_container)
+
+        self._render_keypad()
+
+    def toggle_mode(self, instance):
+        self.is_scientific = not self.is_scientific
+        self.mode_btn.text = "Switch to Basic Mode" if self.is_scientific else "Switch to Scientific Mode"
+        Window.size = (500, 650) if self.is_scientific else (400, 600)
+        self._render_keypad()
+
+    def _render_keypad(self):
+        self.keypad_container.clear_widgets()
+
+        if self.is_scientific:
+            sci_grid = GridLayout(cols=3, spacing=5, size_hint_y=0.3)
+            sci_buttons = ['sin', 'cos', 'tan', 'log', 'ln', 'sqrt', '^', '(', ')']
+            for btn_text in sci_buttons:
+                button = Button(
+                    text=btn_text,
+                    font_size=20,
+                    background_color=[0.4, 0.4, 0.6, 1],
+                    on_press=self.button_click
+                )
+                sci_grid.add_widget(button)
+            self.keypad_container.add_widget(sci_grid)
+
+        # Базова сітка
+        base_grid = GridLayout(cols=4, spacing=5, size_hint_y=0.7 if self.is_scientific else 1.0)
+        base_buttons = [
             ['C', '+/-', '%', '/'],
             ['7', '8', '9', '*'],
             ['4', '5', '6', '-'],
@@ -33,17 +74,16 @@ class CalculatorUI(BoxLayout):
             ['0', '00', '.', '=']
         ]
 
-        grid = GridLayout(cols=4, spacing=5, padding=10)
-        for row in buttons:
+        for row in base_buttons:
             for item in row:
                 button = Button(
                     text=item,
-                    font_size=32,
+                    font_size=26,
                     background_color=self._get_button_color(item),
                     on_press=self.button_click
                 )
-                grid.add_widget(button)
-        self.add_widget(grid)
+                base_grid.add_widget(button)
+        self.keypad_container.add_widget(base_grid)
 
     def _get_button_color(self, label: str):
         if label in {'C', '+/-', '%'}:
@@ -56,22 +96,22 @@ class CalculatorUI(BoxLayout):
         text = instance.text
 
         if text == "C":
-            self.clear()
+            self.result.text = "0"
+            self.engine = CalculatorEngine()
         elif text == "=":
             self.result.text = self.engine.evaluate(self.result.text)
         elif text == "+/-":
             self.result.text = self.engine.toggle_sign(self.result.text)
         elif text == "%":
             self.result.text = self.engine.convert_percent(self.result.text)
+        elif text in {'sin', 'cos', 'tan', 'log', 'ln', 'sqrt'}:
+            # Виклики унарних стратегій через оновлений метод engine
+            self.result.text = self.engine.execute_scientific_unary(text, self.result.text)
         else:
             self.append_text(text)
 
-    def clear(self):
-        self.result.text = "0"
-        self.engine = CalculatorEngine()
-
     def append_text(self, text: str):
-        if self.result.text in {"0", "ERROR"} and text not in {"+", "-", "*", "/", "."}:
+        if self.result.text in {"0", "ERROR"} and text not in {"+", "-", "*", "/", ".", "^", ")", "("}:
             self.result.text = text
         else:
             self.result.text += text
