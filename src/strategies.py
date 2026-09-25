@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 
 class OperationStrategy(ABC):
-    """Базовий абстрактний клас для всіх стратегій обчислення."""
+    """Base abstract class for all calculation strategies."""
 
     @abstractmethod
     def execute(self, *args: float) -> float:
@@ -11,7 +11,7 @@ class OperationStrategy(ABC):
 
 
 # ==========================================
-# Базові арифметичні стратегії (Бінарні)
+# Basic arithmetic strategies (Binary)
 # ==========================================
 
 class AdditionStrategy(OperationStrategy):
@@ -42,7 +42,7 @@ class PowerStrategy(OperationStrategy):
 
 
 # ==========================================
-# Наукові стратегії (Унарні)
+# Scientific strategies (Unary)
 # ==========================================
 
 class SquareRootStrategy(OperationStrategy):
@@ -69,7 +69,7 @@ class CosStrategy(OperationStrategy):
 
 class TanStrategy(OperationStrategy):
     def execute(self, x: float) -> float:
-        # Перевірка на нескінченність для tan(90 + k*180)
+        # Check for infinity for tan(90 + k*180)
         if math.isclose(abs(x % 180), 90, abs_tol=1e-9):
             raise ValueError("Tangent undefined for this angle")
         return math.tan(math.radians(x))

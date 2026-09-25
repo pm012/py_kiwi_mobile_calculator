@@ -66,9 +66,9 @@ def test_safe_evaluator_unary_operators():
 
 
 def test_engine_repeat_equal_without_last_result(engine):
-    # Порожній ввід без збереженого результату повертає порожній рядок
+    # Empty input without a saved result returns an empty string
     assert engine.evaluate("") == ""
     
-    # Після успішного обчислення повторний порожній вираз застосовує останній оператор
+    # After successful calculation, a repeated empty expression applies the last operator
     engine.evaluate("10+5")
     assert engine.evaluate("") == "20"  # 15 + 5

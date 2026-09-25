@@ -1,5 +1,5 @@
 import os
-# Вимикаємо графічні вікна Kivy для тестів
+# Switch off Kivy graphical windows for tests
 os.environ["KIVY_NO_ARGS"] = "1"
 os.environ["KIVY_NO_FILELOG"] = "1"
 os.environ["KIVY_NO_CONSOLELOG"] = "1"
@@ -20,14 +20,14 @@ def test_ui_initial_state(ui):
 
 
 def test_ui_button_clicks_number_and_clear(ui):
-    # Симуляція натискання кнопки '7'
+    # Simulation of pressing the '7' button
     class MockInstance:
         text = "7"
 
     ui.button_click(MockInstance())
     assert ui.result.text == "7"
 
-    # Симуляція 'C'
+    # Simulation of pressing 'C' button to clear the display
     MockInstance.text = "C"
     ui.button_click(MockInstance())
     assert ui.result.text == "0"
@@ -37,7 +37,7 @@ def test_ui_button_click_operations(ui):
     class MockInstance:
         text = ""
 
-    # Ввід: 5 + 3 =
+    # Simulation of input: 5 + 3 =
     for btn in ["5", "+", "3", "="]:
         MockInstance.text = btn
         ui.button_click(MockInstance())

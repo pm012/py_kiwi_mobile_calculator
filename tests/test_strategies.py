@@ -39,7 +39,7 @@ def test_division_by_zero():
 
 
 def test_abstract_strategy_instantiation():
-    """Перевірка заборони створення екземпляра абстрактного класу."""
+    """Check for prohibition of creating an instance of the abstract class."""
     with pytest.raises(TypeError):
         OperationStrategy()
 

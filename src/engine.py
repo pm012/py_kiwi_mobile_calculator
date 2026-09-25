@@ -22,7 +22,7 @@ from src.strategies import (
 
 
 class SafeEvaluator(ast.NodeVisitor):
-    """Безпечний AST-парсер виразів з підтримкою математичних функцій та констант."""
+    """Safe AST parser for expressions with support for mathematical functions and constants."""
 
     ALLOWED_OPERATORS = {
         ast.Add: op.add,
@@ -93,7 +93,7 @@ class SafeEvaluator(ast.NodeVisitor):
 
 
 class CalculatorEngine:
-    """Двигун калькулятора з підтримкою стандартних та наукових стратегій."""
+    """Engine for the calculator with support for standard and scientific strategies."""
 
     def __init__(self):
         self.evaluator = SafeEvaluator()
@@ -119,18 +119,18 @@ class CalculatorEngine:
     def evaluate(self, expression: str) -> str:
         expression = expression.strip()
 
-        # Обробка повторного натискання "="
+        # Handling repeated "=" button press
         if not expression:
             if self.last_result is not None and self.last_operator and self.last_operand:
                 expression = f"{self.last_result}{self.last_operator}{self.last_operand}"
             else:
                 return ""
 
-        # Заміна візуальних символів на зрозумілі для AST
+        # Replacing visual symbols with understandable ones for AST
         formatted_expr = expression.replace("×", "*").replace("÷", "/").replace("^", "**")
 
         try:
-            # Фіксація останньої операції для повторного використанні "="
+            # Fixing the last operation for repeated use of "="
             match = re.search(r'([\+\-\*/\*\*])\s*([\d.]+)$', formatted_expr)
             if match:
                 self.last_operator = match.group(1)
@@ -143,7 +143,7 @@ class CalculatorEngine:
             return "ERROR"
 
     def execute_scientific_unary(self, op_code: str, value_str: str) -> str:
-        """Пряме застосування унарної наукової стратегії (наприклад: sin, sqrt, sqr, fact)."""
+        """Direct application of the unary scientific strategy (e.g., sin, sqrt, sqr, fact)."""
         if op_code not in self.strategies:
             return "ERROR"
         try:

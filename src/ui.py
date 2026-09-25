@@ -14,7 +14,7 @@ class CalculatorUI(BoxLayout):
         self.engine = engine or CalculatorEngine()
         self.is_scientific = False
 
-        # Дисплей
+        # Display
         self.result = TextInput(
             font_size=40,
             size_hint_y=0.18,
@@ -27,7 +27,7 @@ class CalculatorUI(BoxLayout):
         )
         self.add_widget(self.result)
 
-        # Перемикач режимів
+        # Mode toggle
         self.mode_btn = Button(
             text="Switch to Scientific Mode",
             size_hint_y=0.08,
@@ -36,7 +36,7 @@ class CalculatorUI(BoxLayout):
         )
         self.add_widget(self.mode_btn)
 
-        # Контейнер під клавіатуру
+        # Keyboard container
         self.keypad_container = BoxLayout(orientation='vertical', size_hint_y=0.74)
         self.add_widget(self.keypad_container)
 
@@ -64,7 +64,7 @@ class CalculatorUI(BoxLayout):
                 sci_grid.add_widget(button)
             self.keypad_container.add_widget(sci_grid)
 
-        # Базова сітка
+        # Base grid
         base_grid = GridLayout(cols=4, spacing=5, size_hint_y=0.7 if self.is_scientific else 1.0)
         base_buttons = [
             ['C', '+/-', '%', '/'],
@@ -105,7 +105,7 @@ class CalculatorUI(BoxLayout):
         elif text == "%":
             self.result.text = self.engine.convert_percent(self.result.text)
         elif text in {'sin', 'cos', 'tan', 'log', 'ln', 'sqrt'}:
-            # Виклики унарних стратегій через оновлений метод engine
+            # Calls for unary strategies through the engine method
             self.result.text = self.engine.execute_scientific_unary(text, self.result.text)
         else:
             self.append_text(text)
