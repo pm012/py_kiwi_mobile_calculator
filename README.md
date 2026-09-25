@@ -3,7 +3,7 @@
 ## Cross-Platform Mobile Calculator Application Built with Kivy
 
 ### Overview
-**kiwi_mobile** is a modern, cross-platform mobile calculator application built using Python and the Kivy framework. Designed with modularity, security, and scalability in mind, it provides a seamless user experience across PC, Android, and iOS platforms. The app replaces unsafe dynamic evaluation with a custom AST (Abstract Syntax Tree) parser and employs the Strategy pattern to easily support advanced operational modes (e.g., Scientific and Programmer calculators).
+**kiwi_mobile** is a modern, cross-platform mobile calculator app built using Python and the Kivy framework. Designed to adhere to modularity, security, and scalability, it provides a seamless UX approach across PC, Android, and iOS platforms. The app developed with a custom AST (Abstract Syntax Tree) parser and utilizes the Strategy pattern to support advanced operational modes (e.g., Scientific and Programmer calculators) to simplify further modes extension.
 
 ---
 
