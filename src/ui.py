@@ -1,5 +1,8 @@
 # src/ui.py
+import webbrowser
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.gridlayout import GridLayout
@@ -27,7 +30,7 @@ class CalculatorUI(BoxLayout):
         )
         self.add_widget(self.result)
 
-        # Navigation panel for mode switching
+        # Navigation panel for mode switching and info
         self.mode_panel = BoxLayout(orientation='horizontal', spacing=5, size_hint_y=0.08)
         self.add_widget(self.mode_panel)
 
@@ -36,6 +39,54 @@ class CalculatorUI(BoxLayout):
         self.add_widget(self.keypad_container)
 
         self._update_layout()
+
+    def show_about_popup(self, instance=None):
+        # Main container for the modal window
+        content = BoxLayout(orientation='vertical', padding=15, spacing=10)
+
+        # Text information about the application
+        info_label = Label(
+            text=(
+                "[b]Kiwi Mobile Calculator[/b]\n\n"
+                "Version: 1.0.0\n"
+                "Mobile calculator built with Kivy / Python\n"
+                "Created by Serhii Kroshka aka pm012\n"
+            ),
+            markup=True,
+            halign='center',
+            valign='middle'
+        )
+        info_label.bind(size=info_label.setter('text_size'))
+        content.add_widget(info_label)
+
+        # Button link to GitHub
+        github_btn = Button(
+            text="GitHub Repository",
+            size_hint_y=None,
+            height=40,
+            background_color=(0.2, 0.6, 1, 1)
+        )
+        github_btn.bind(on_release=lambda x: webbrowser.open("https://github.com/pm012/py_kiwi_mobile_calculator.git"))
+        content.add_widget(github_btn)
+
+        # Button to close the window
+        close_btn = Button(
+            text="Close",
+            size_hint_y=None,
+            height=40
+        )
+        content.add_widget(close_btn)
+
+        # Create modal window Popup
+        popup = Popup(
+            title="About the App",
+            content=content,
+            size_hint=(0.85, 0.45),
+            auto_dismiss=True
+        )
+
+        close_btn.bind(on_release=popup.dismiss)
+        popup.open()
 
     def set_mode(self, mode: str):
         if self.current_mode == mode:
@@ -60,6 +111,7 @@ class CalculatorUI(BoxLayout):
         self.mode_panel.clear_widgets()
         modes = [("Basic", "basic"), ("Scientific", "scientific"), ("Programmer", "programmer")]
         
+        # Кнопки перемикання режимів (займають більшість ширини)
         for label, mode_key in modes:
             btn = Button(
                 text=label,
@@ -69,6 +121,16 @@ class CalculatorUI(BoxLayout):
             )
             btn.bind(on_press=lambda instance, m=mode_key: self.set_mode(m))
             self.mode_panel.add_widget(btn)
+
+        # Компактна кнопка "?" (About) справа на панелі режимів
+        about_btn = Button(
+            text="?",
+            font_size=16,
+            size_hint_x=0.2,  # Вужчий розмір для збалансованого вигляду
+            background_color=[0.4, 0.4, 0.4, 1]
+        )
+        about_btn.bind(on_release=self.show_about_popup)
+        self.mode_panel.add_widget(about_btn)
 
         self._render_keypad()
 
