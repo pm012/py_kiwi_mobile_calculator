@@ -181,3 +181,10 @@ def test_safe_evaluator_direct_exceptions(evaluator):
 
     with pytest.raises(ValueError, match="Unsupported function call"):
         evaluator.eval("non_existing_func(5)")
+
+def test_scientific_unary_with_expression(engine):
+    # If evaluating the operand before calling:
+    expr = "(3+6)"
+    val = str(engine.evaluator.eval(expr))
+    result = engine.execute_scientific_unary("sqrt", val)
+    assert result == "3" or result == "3.0"

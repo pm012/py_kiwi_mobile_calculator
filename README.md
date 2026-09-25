@@ -1,36 +1,58 @@
 # kiwi_mobile
-## Python mobile application (calculator) using Kiwi
 
-What has been improved since previous version.
-1. Segregation of Concerns (SoC): Separate UI (Kivy) from mathematical business logic. Business logic should not know about buttons and vidgets.
+## Cross-Platform Mobile Calculator Application Built with Kivy
 
-2. Applied MVC / Strategy Pattern:
+### Overview
+**kiwi_mobile** is a modern, cross-platform mobile calculator application built using Python and the Kivy framework. Designed with modularity, security, and scalability in mind, it provides a seamless user experience across PC, Android, and iOS platforms. The app replaces unsafe dynamic evaluation with a custom AST (Abstract Syntax Tree) parser and employs the Strategy pattern to easily support advanced operational modes (e.g., Scientific and Programmer calculators).
 
-* Model: A calculator engine (CalculatorEngine) that works via an AST (abstract syntax tree) or a strict safe parser instead of eval().
-* View: Pure Kivy-interface, that is responsible for the desplay and interception of user actions.
+---
 
-* Controller / Operations Strategy: Each arythmetical operation (+, -, %, +/-) can be implemented via unified interface of operators (pattern Strategy), this will allow to simplify addition of new modes
-for example: Scintific Calculator, Progrrammers calculator.
+### Key Improvements & Architectural Enhancements
 
-3. Vulnurable eval() replaced with safe ast.literal_eval or AST-parcer: Protects code from running Frees code from arbitrary Python code execution vulnerabilities.
+1. **Separation of Concerns (SoC)**
+   * Decoupled the graphical user interface (Kivy) from the mathematical business logic. 
+   * The core computing engine operates completely independently of UI elements, layouts, and widgets.
 
-Project Structure: 
-project_root/
+2. **MVC Architecture & Strategy Pattern**
+   * **Model:** A robust calculation engine (`CalculatorEngine`) that evaluates expressions safely via an AST-based parser instead of relying on native execution.
+   * **View:** A clean, responsive Kivy interface responsible solely for rendering UI elements and capturing user inputs.
+   * **Controller / Strategy Pattern:** Arithmetic operations (such as `+`, `-`, `%`, `+/-`) are encapsulated via a unified operator interface. This design allows straightforward expansion into specialized modes (e.g., Scientific or Programmer mode).
+
+3. **Enhanced Security**
+   * Replaced vulnerable `eval()` execution with safe evaluation mechanisms (`ast.literal_eval` / custom AST traversal).
+   * Prevents arbitrary Python code execution vulnerabilities, ensuring secure expression processing.
+
+---
+
+### Project Structure
+
+```text
+kiwi_mobile/
 │
 ├── src/
 │   ├── __init__.py
-│   ├── engine.py          # Calculator model and safe computing module
-│   ├── strategies.py      # Strategies of arithmetical operations
-│   └── ui.py              # Kivy UI (View)
+│   ├── engine.py                   # Core calculator engine & safe AST evaluator
+│   ├── ui.py                       # Kivy-based Graphical User Interface (View)
+│   └── strategies/                 # Strategy pattern implementations for operations
+│       ├── __init__.py
+│       ├── base.py                 # Abstract base class for operation strategies
+│       ├── basic.py                # Basic arithmetic (+, -, *, /, ^)
+│       ├── programmer.py           # Bitwise logic (AND, OR, XOR, NOT, shifts, MOD)
+│       └── scientific.py           # Scientific operations (sqrt, trig, logs, factorial)
 │
 ├── tests/
 │   ├── __init__.py
-│   ├── test_engine.py     # Tests of logic
-│   └── test_strategies.py # Tests for operators and  edge cases testing
-│   └── test_ui.py         # Testing UI (kivi)  
-├── main.py                # Entry point for the application
-├── requirements.txt
-└── pytest.ini
+│   ├── test_engine.py              # Tests for AST parser, expression handling & edge cases
+│   ├── test_basic_strategies.py    # Unit tests for basic arithmetic strategies
+│   ├── test_programmer_strategies.py # Unit tests for bitwise & base-conversion logic
+│   ├── test_scientific_strategies.py # Unit tests for trigonometric, logarithmic & root logic
+│   └── test_ui.py                  # Kivy UI integration, user input & mode-switching tests
+│
+├── main.py                         # Application entry point
+├── pyproject.toml                  # Poetry project configuration & dependencies
+├── requirements.txt                # Exported dependencies
+└── pytest.ini                      # Pytest configuration settings
+```
 
 
 # Launch and setup manual
@@ -58,7 +80,7 @@ poetry run pytest
 ## Installation/launch on Android (iOS) device with specialized Boldozer tool
 *Important:* To create the package you need to use Ubuntu 24.04 (or later) environment. Please use wsl if on Windows or VM on MacOS
 
-1. Install rquired libraries:
+1. Install system dependencies:
 ```bash
 sudo apt update
 sudo apt install -y build-essential ccache git libffi-dev libssl-dev \
@@ -72,27 +94,27 @@ sudo apt install -y build-essential ccache git libffi-dev libssl-dev \
 poetry add --group dev buildozer cython
 ```
 
-3. Create configuration file for buldozer building tool (will create buildozer.spec)
+3. Initialize Buildozer Specification (will create buildozer.spec)
 ```bash
 poetry run buildozer init
 ```
 
 4. Open created buldozer.spec file and edit the following parameters:
 
-* Name and package
+* Application Details:
 ```bash
 title = Mobile Calculator
 package.name = calcapp
 package.domain = org.example
 ```
 
-* Entry point and source code
+* Source Files & Extentions:
 ```bash
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 ```
 
-* Dependencies (requirements). Define all needed dependencies
+* Application Dependencies:
 ```bash
 requirements = python3, kivy==2.3.1
 ```
@@ -102,13 +124,15 @@ requirements = python3, kivy==2.3.1
 orientation = portrait
 ```
 
-5. Switch on developer options on the smarphone and USB debugging, and connect it with USB data cable to PC. Execute the follobing command to build and automatic update:
+5. Build, Deploy and Run
+
+Enable Developer Options and USB Debugging on your Android device, connect it to your PC via USB cable, and execute:
 
 ```bash
 poetry run buildozer -v android debug deploy run
 ```
 
-*Important Note:* During the first launch the Buldozer automatically loads Android SDK, NDK and Android NDK toolchain (it may take 10-20 minutes and will need additional space on the drive ~10-15Gb). Nex builds will need much less time.
+*Important Note:* On the initial build, Buildozer will automatically download the Android SDK, NDK, and necessary build toolchains. This process requires 10–15 GB of disk space and may take 10–20 minutes. Subsequent builds will be significantly faster.
 
 Alternative: Testing via Kivy Launcher (without compilation)
 
