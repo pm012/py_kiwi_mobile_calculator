@@ -1,45 +1,5 @@
+from src.strategies.base import OperationStrategy
 import math
-from abc import ABC, abstractmethod
-
-
-class OperationStrategy(ABC):
-    """Base abstract class for all calculation strategies."""
-
-    @abstractmethod
-    def execute(self, *args: float) -> float:
-        pass
-
-
-# ==========================================
-# Basic arithmetic strategies (Binary)
-# ==========================================
-
-class AdditionStrategy(OperationStrategy):
-    def execute(self, a: float, b: float) -> float:
-        return a + b
-
-
-class SubtractionStrategy(OperationStrategy):
-    def execute(self, a: float, b: float) -> float:
-        return a - b
-
-
-class MultiplicationStrategy(OperationStrategy):
-    def execute(self, a: float, b: float) -> float:
-        return a * b
-
-
-class DivisionStrategy(OperationStrategy):
-    def execute(self, a: float, b: float) -> float:
-        if b == 0:
-            raise ZeroDivisionError("Division by zero")
-        return a / b
-
-
-class PowerStrategy(OperationStrategy):
-    def execute(self, a: float, b: float) -> float:
-        return math.pow(a, b)
-
 
 # ==========================================
 # Scientific strategies (Unary)
